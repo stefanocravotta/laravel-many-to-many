@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use App\Post;
+use App\Tag;
 
 class PostController extends Controller
 {
@@ -30,7 +31,8 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.posts.create' , compact('categories'));
+        $tags= Tag::all();
+        return view('admin.posts.create' , compact('categories', 'tags'));
     }
 
     /**
@@ -48,6 +50,12 @@ class PostController extends Controller
         $new_post = new Post();
         $new_post->fill($data);
         $new_post->save();
+
+        if(array_key_exists('tags', $data)){
+            $new_post->tags()->attach($data['tags']);
+        }
+
+
         return redirect()->route('admin.posts.show', $new_post);
     }
 
@@ -71,7 +79,8 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::all();
-        return view('admin.posts.edit', compact('post' , 'categories'));
+        $tags = Tag::all();
+        return view('admin.posts.edit', compact('post' , 'categories' , 'tags'));
     }
 
     /**
@@ -88,6 +97,13 @@ class PostController extends Controller
         $data['immagine'] = $this->imageUploader($request, $data);
 
         $post->update($data);
+
+        if(array_key_exists('tags' , $data)){
+            $post->tags()->sync($data['tags']);
+        }else{
+            // $post->tags()->sync([]);
+            $post->tags()->detach();
+        }
 
         return redirect()->route('admin.posts.show', $post);
 

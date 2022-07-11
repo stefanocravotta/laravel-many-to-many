@@ -21,6 +21,12 @@
                 @endif
             </ul>
 
+            @if ($post->tags)
+            @foreach ($post->tags as $tag)
+            <span class="list-group-item badge bg-success" >{{$tag->name}}</span>
+            @endforeach
+            @endif
+
             <div class="card-body d-flex justify-content-between">
                 <a class="btn btn-success" href="{{ route('admin.posts.edit' , $post) }}" role="button">Modifica</a>
                 <form

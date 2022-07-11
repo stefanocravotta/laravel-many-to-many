@@ -64,7 +64,25 @@
                             @endforeach
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Modifica</button>
+                    {{-- Tags --}}
+                    <div class="mb-3">
+                        @foreach ($tags as $tag)
+                        <input
+                        type="checkbox"
+                        name="tags[]"
+                        id="tag{{$loop->iteration}}"
+
+                        @if (!$errors->any() && $post->tags->contains($tag->id) )
+                        checked
+                        @elseif ($errors->any() && in_array($tag->id , old('tags' , [] ) ))
+                        checked
+                        @endif
+
+                        value="{{$tag->id}}">
+                        <label class="mr-3" for="tag{{$loop->iteration}}">{{$tag->name}}</label>
+                        @endforeach
+                    </div>
+                    <button onclick="return confirm('Confermare le modifiche?')" type="submit" class="btn btn-primary">Modifica</button>
                     <a onclick="return confirm('Sei sicuro di voler annullare tutte le modifiche?')" href="{{route('admin.posts.index')}}" class="btn btn-danger"><< Torna alla pagina principale</a>
                   </form>
 
