@@ -34,5 +34,9 @@ class Post extends Model
         'immagine',
         'category_id'
     ];
+
+    public function tags(){
+        return $this->belongsToMany('App\Tag');
+    }
 }
 
